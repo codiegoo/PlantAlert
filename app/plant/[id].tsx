@@ -16,6 +16,7 @@ import {
   Image,
   Linking,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -96,17 +97,14 @@ export default function PlantDetailScreen() {
 
     const nowIso = new Date().toISOString();
 
-    // Actualiza en la BD (marca como regada ahora)
     await markWateredNow(plant.id);
 
-    // Programa el siguiente recordatorio
     await scheduleWaterNotification({
       name: plant.name,
       waterEveryDays: plant.waterEveryDays,
       lastWateredAt: nowIso,
     });
 
-    // Recarga datos en pantalla
     await load();
   };
 
@@ -131,82 +129,89 @@ export default function PlantDetailScreen() {
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: bgColor }]}>
-      <View style={styles.container}>
-        {plant.photoUri && (
-          <Image source={{ uri: plant.photoUri }} style={styles.photo} />
-        )}
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          {plant.photoUri && (
+            <Image source={{ uri: plant.photoUri }} style={styles.photo} />
+          )}
 
-        {/* Nombre + botón editar */}
-        <View style={styles.nameRow}>
-          <Text style={[styles.name, { color: textColor }]}>
-            {plant.name}
+          {/* Nombre + botón editar */}
+          <View style={styles.nameRow}>
+            <Text style={[styles.name, { color: textColor }]}>
+              {plant.name}
+            </Text>
+            <Pressable style={styles.editButton} onPress={handleEdit}>
+              <Ionicons name="pencil" size={18} color="#FFFFFF" />
+            </Pressable>
+          </View>
+
+          <Text style={[styles.subtitle, { color: subtleTextColor }]}>
+            Riego cada {plant.waterEveryDays} días
           </Text>
-          <Pressable style={styles.editButton} onPress={handleEdit}>
-            <Ionicons name="pencil" size={18} color="#FFFFFF" />
-          </Pressable>
-        </View>
 
-        <Text style={[styles.subtitle, { color: subtleTextColor }]}>
-          Riego cada {plant.waterEveryDays} días
-        </Text>
-
-        <View
-          style={[
-            styles.progressBg,
-            { backgroundColor: progressBgColor },
-          ]}
-        >
           <View
             style={[
-              styles.progressFill,
-              {
-                width: `${percent}%`,
-                backgroundColor: progressFillColor,
-              },
+              styles.progressBg,
+              { backgroundColor: progressBgColor },
             ]}
-          />
+          >
+            <View
+              style={[
+                styles.progressFill,
+                {
+                  width: `${percent}%`,
+                  backgroundColor: progressFillColor,
+                },
+              ]}
+            />
+          </View>
+          <Text style={[styles.percent, { color: subtleTextColor }]}>
+            {percent}% del ciclo de riego
+          </Text>
+
+          <Pressable
+            style={[styles.primaryButton, { backgroundColor: primaryButtonBg }]}
+            onPress={handleWater}
+          >
+            <Text
+              style={[
+                styles.primaryButtonText,
+                { color: primaryButtonTextColor },
+              ]}
+            >
+              Marcar como regada
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={[
+              styles.secondaryButton,
+              { borderColor: secondaryBorderColor },
+            ]}
+            onPress={openGoogle}
+          >
+            <Text
+              style={[
+                styles.secondaryButtonText,
+                { color: secondaryTextColor },
+              ]}
+            >
+              Ver cuidados y recomendaciones en Google
+            </Text>
+          </Pressable>
+
+          <Pressable style={styles.deleteButton} onPress={handleDelete}>
+            <Text
+              style={[styles.deleteButtonText, { color: deleteTextColor }]}
+            >
+              Eliminar planta
+            </Text>
+          </Pressable>
         </View>
-        <Text style={[styles.percent, { color: subtleTextColor }]}>
-          {percent}% del ciclo de riego
-        </Text>
-
-        <Pressable
-          style={[styles.primaryButton, { backgroundColor: primaryButtonBg }]}
-          onPress={handleWater}
-        >
-          <Text
-            style={[
-              styles.primaryButtonText,
-              { color: primaryButtonTextColor },
-            ]}
-          >
-            Marcar como regada
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={[
-            styles.secondaryButton,
-            { borderColor: secondaryBorderColor },
-          ]}
-          onPress={openGoogle}
-        >
-          <Text
-            style={[
-              styles.secondaryButtonText,
-              { color: secondaryTextColor },
-            ]}
-          >
-            Ver cuidados y recomendaciones en Google
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={[styles.deleteButtonText, { color: deleteTextColor }]}>
-            Eliminar planta
-          </Text>
-        </Pressable>
-      </View>
+      </ScrollView>
 
       <BottomNavBar />
     </SafeAreaView>
@@ -217,11 +222,13 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
   },
-  container: {
-    flex: 1,
+  scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 100,
+    paddingBottom: 120, // deja espacio para el BottomNavBar
+  },
+  container: {
+    flexGrow: 1,
   },
   photo: {
     width: '100%',
@@ -229,7 +236,6 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     marginBottom: 20,
   },
-  // 🔹 Nombre + botón editar
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -244,7 +250,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 22,
-    backgroundColor: '#22C55E', // verde
+    backgroundColor: '#22C55E',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 8,

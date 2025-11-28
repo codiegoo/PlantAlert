@@ -87,16 +87,16 @@ const styles = StyleSheet.create({
   },
   // rueda redonda para Mis plantas y Oscuro/Claro
   bubble: {
-    width: 52,
-    height: 52,
+    width: 36,
+    height: 36,
     borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
   },
   // botón central (ya lo tenías)
   addWrapper: {
-    width: 52,
-    height: 52,
+    width: 36,
+    height: 36,
     borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',

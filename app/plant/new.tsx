@@ -14,7 +14,10 @@ import { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -56,7 +59,8 @@ export default function NewPlantScreen() {
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      // API nueva: MediaType en lugar de MediaTypeOptions
+      mediaTypes: ['images'],
       allowsEditing: true,
       quality: 0.8,
     });
@@ -113,80 +117,91 @@ export default function NewPlantScreen() {
     <SafeAreaView
       style={[styles.safe, { backgroundColor: theme.background }]}
     >
-      <View style={styles.container}>
-        <Text style={[styles.title, { color: theme.text }]}>
-          {isEditing ? 'Editar planta' : 'Nueva planta'}
-        </Text>
-
-        <Pressable
-          style={[styles.photoBox, { borderColor: theme.progressBg }]}
-          onPress={pickImageFromCamera}
+      <KeyboardAvoidingView
+        style={styles.safe}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          {photoUri ? (
-            <Image source={{ uri: photoUri }} style={styles.photo} />
-          ) : (
-            <Text
-              style={[
-                styles.photoPlaceholder,
-                { color: theme.subtleText },
-              ]}
-            >
-              Toca para tomar foto
+          <View style={styles.container}>
+            <Text style={[styles.title, { color: theme.text }]}>
+              {isEditing ? 'Editar planta' : 'Nueva planta'}
             </Text>
-          )}
-        </Pressable>
 
-        <TextInput
-          style={[
-            styles.input,
-            {
-              borderColor: theme.progressBg,
-              backgroundColor: theme.card,
-              color: theme.text,
-            },
-          ]}
-          placeholder="Nombre de la planta"
-          placeholderTextColor={theme.subtleText}
-          value={name}
-          onChangeText={setName}
-        />
+            <Pressable
+              style={[styles.photoBox, { borderColor: theme.progressBg }]}
+              onPress={pickImageFromCamera}
+            >
+              {photoUri ? (
+                <Image source={{ uri: photoUri }} style={styles.photo} />
+              ) : (
+                <Text
+                  style={[
+                    styles.photoPlaceholder,
+                    { color: theme.subtleText },
+                  ]}
+                >
+                  Toca para tomar foto
+                </Text>
+              )}
+            </Pressable>
 
-        <TextInput
-          style={[
-            styles.input,
-            {
-              borderColor: theme.progressBg,
-              backgroundColor: theme.card,
-              color: theme.text,
-            },
-          ]}
-          placeholder="Días entre riegos (ej. 3)"
-          placeholderTextColor={theme.subtleText}
-          keyboardType="numeric"
-          value={days}
-          onChangeText={setDays}
-        />
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  borderColor: theme.progressBg,
+                  backgroundColor: theme.card,
+                  color: theme.text,
+                },
+              ]}
+              placeholder="Nombre de la planta"
+              placeholderTextColor={theme.subtleText}
+              value={name}
+              onChangeText={setName}
+            />
 
-        <Pressable style={styles.buttonPrimary} onPress={handleSave}>
-          <Text style={styles.buttonPrimaryText}>
-            {isEditing ? 'Guardar cambios' : 'Guardar'}
-          </Text>
-        </Pressable>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  borderColor: theme.progressBg,
+                  backgroundColor: theme.card,
+                  color: theme.text,
+                },
+              ]}
+              placeholder="Días entre riegos (ej. 3)"
+              placeholderTextColor={theme.subtleText}
+              keyboardType="numeric"
+              value={days}
+              onChangeText={setDays}
+            />
 
-        <Pressable
-          style={styles.buttonSecondary}
-          onPress={() => router.back()}
-        >
-          <Text
-            style={[
-              styles.buttonSecondaryText,
-              { color: theme.subtleText },
-            ]}
-          >
-            Cancelar
-          </Text>
-        </Pressable>
-      </View>
+            <Pressable style={styles.buttonPrimary} onPress={handleSave}>
+              <Text style={styles.buttonPrimaryText}>
+                {isEditing ? 'Guardar cambios' : 'Guardar'}
+              </Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.buttonSecondary}
+              onPress={() => router.back()}
+            >
+              <Text
+                style={[
+                  styles.buttonSecondaryText,
+                  { color: theme.subtleText },
+                ]}
+              >
+                Cancelar
+              </Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <BottomNavBar />
     </SafeAreaView>
@@ -195,11 +210,13 @@ export default function NewPlantScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  container: {
-    flex: 1,
+  scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 100,
+    paddingBottom: 120, // deja espacio para el BottomNavBar en Android/iOS
+  },
+  container: {
+    flexGrow: 1,
   },
   title: {
     fontSize: 24,
