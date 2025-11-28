@@ -1,41 +1,84 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
+// constants/theme.ts
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Verde principal (acciones, progreso, etc.)
+const primaryGreen = '#22C55E';   // tailwind green-500
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    // Fondo general
+    background: '#efefefff',   // gray-100
+
+    // Tarjetas / cards / inputs
+    card: '#FFFFFF',
+
+    // Texto
+    text: '#020617',         // slate-950
+    subtleText: '#6B7280',   // gray-500
+
+    // Iconos y elementos activos
+    tint: primaryGreen,      // para elementos activos / pestaña activa
+    icon: '#0F172A',         // slate-900
+
+    // Barras de progreso
+    progressBg: '#E5E7EB',   // gray-200
+    progressFill: primaryGreen,
+
+    // Bottom navigation bar (flotante)
+    bottomBar: '#0F172A',    // navy oscuro para contrastar con fondo claro
+
+    // Botones principales
+    primary: primaryGreen,
+    onPrimary: '#FFFFFF',
+
+    // Acentos secundarios (links, botón "Google", etc.)
+    accent: '#38BDF8',       // sky-400
+    accentText: '#0F172A',
+
+    // Estados de error / eliminar
+    danger: '#F97373',       // rojo suave
   },
+
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    // Fondo general
+    background: '#020617',   // slate-950 (muy oscuro, casi negro pero con tinte azul)
+
+    // Tarjetas claramente diferenciadas
+    card: '#0F172A',         // slate-900 (#020617) se nota sobre el fondo
+
+    // Texto
+    text: '#E5E7EB',         // gray-200
+    subtleText: '#9CA3AF',   // gray-400
+
+    // Iconos y elementos activos
+    tint: primaryGreen,
+    icon: '#E5E7EB',
+
+    // Barras de progreso
+    progressBg: '#1F2937',   // gray-800
+    progressFill: primaryGreen,
+
+    // Bottom navigation bar algo más clara que el fondo
+    bottomBar: '#020617',    // slate-900
+
+    // Botones principales
+    primary: primaryGreen,
+    onPrimary: '#0B1120',    // azul muy oscuro: hace contraste pero no quema
+
+    // Acentos secundarios
+    accent: '#38BDF8',       // sky-400
+    accentText: '#E5E7EB',
+
+    // Error / eliminar
+    danger: '#FB7185',       // rose-400
   },
 };
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {
@@ -47,7 +90,8 @@ export const Fonts = Platform.select({
   web: {
     sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
     serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
+    rounded:
+      "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
